@@ -4,39 +4,52 @@ using UnityEngine;
 
 public class Arma : MonoBehaviour
 {
-    [SerializeField] private float velocidadDeBala;
-    [SerializeField] private float carencia;
-    [SerializeField] private GameObject municion;
-    [SerializeField] private Transform puntoMira;
+    [SerializeField] float velocidadBala;
+    [SerializeField] GameObject balaPrefab;
+    [SerializeField] Transform puntoTiro;
 
-    private bool puedoDisparar = true;
+   // [SerializeField] public int municionActual = 100;
+    //[SerializeField] int capacidadMaxima = 100;
 
+    
+
+
+    private void Start()
+    {
+       AudioManager.AudioInstance.Stop("Disparo");
+    }
 
     void Update()
     {
-        DispararArma();
+        AccionarArma();
     }
-    void DispararArma()
+    public void AccionarArma()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && puedoDisparar) // Tecla "Espacio" se enlaza con la accion de disparar y puedo disparar.
+        if (JalaGatillo())
         {
             Disparar();
-            StartCoroutine(Espera());
+
         }
     }
-    void Disparar()
+    bool JalaGatillo()
     {
-        GameObject clone = Instantiate(municion, puntoMira.position, puntoMira.rotation); // Instanceo el "Prefab" y creo, clones de la municion.
-        Rigidbody rb = clone.GetComponent<Rigidbody>(); // "RigidBody" de los "Prefabs" de los clones.
-        rb.AddForce(Vector3.forward * velocidadDeBala); // Agrego fuerza en linea recta.
-        Destroy(clone, 7); //Cuenta regresiva para destruccion de la bala.
+        return Input.GetKeyDown(KeyCode.Mouse0);
     }
-    IEnumerator Espera() //Tiempo de espera entre disparos.
+
+    public void Disparar()
     {
-        puedoDisparar = false;
-
-        yield return new WaitForSeconds(carencia);
-
-        puedoDisparar = true;
+        if (JalaGatillo())
+        {
+            AudioManager.AudioInstance.Play("Disparo");
+            GameObject clone = Instantiate(balaPrefab, puntoTiro.position, puntoTiro.rotation);
+            Rigidbody rb = clone.GetComponent<Rigidbody>();
+            rb.AddForce(puntoTiro.forward * velocidadBala, ForceMode.Impulse);
+            Destroy(clone, 7);
+            
+        }
     }
+
+  
+  
+
 }

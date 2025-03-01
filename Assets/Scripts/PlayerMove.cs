@@ -4,64 +4,80 @@ using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    private float movX;
-    private float movZ;
+    //Correr
+    [SerializeField] private float speed = 0f;
+    [SerializeField] private float velocidadCorrer = 5f;
+    private float velocidadNormal = 1f;
+    private bool estaCorriendo;
 
-    [SerializeField]
-    private float movSpeed;
+    //Saltar
+    [SerializeField] private float gravity = -9.81f;
+    [SerializeField] private float boxRadio = 0.3f;
+    [SerializeField] private float jump = 3f;
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private Transform groundCheck;
+    private bool isgrounded;
 
-    private CharacterController charCtrl;
+    [SerializeField] private CharacterController controller;
+    Vector3 velocity;
 
-    [SerializeField]
-    private float gravedad = -9.8f;
-
-    [SerializeField]
-    private float fuerzaSalto;
-
-    private Vector3 movVert;
-
-    private bool isGrounded;
-
-    [SerializeField]
-    private Transform groundCheck;
-
-    [SerializeField]
-    private float radius;
-
-    [SerializeField]
-    private LayerMask whatIsGround;
-
-    void Start()
+    private void Start()
     {
-        charCtrl = GetComponent<CharacterController>();
-    }
+       AudioManager.AudioInstance.Stop("Salto");
 
+    }
     void Update()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, radius, whatIsGround);
+        Cursor.visible = false;
 
-        
-        movX = Input.GetAxis("Horizontal");
-        movZ = Input.GetAxis("Vertical");
-
-        Vector3 movimiento = transform.right * movX + transform.forward * movZ;
-
-        charCtrl.Move(movSpeed * Time.deltaTime * movimiento);
-
-
-        if (isGrounded && movVert.y < 0)
+        isgrounded = Physics.CheckSphere(groundCheck.position, boxRadio, groundMask);
+        if (isgrounded && velocity.y < 0)
         {
-            movVert.y = 0;
+            velocity.y = -2f;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+
+        Vector3 move = transform.right * x + transform.forward * z;
+        controller.Move(move * speed * Time.deltaTime * velocidadNormal);
+
+        JumpCheck();
+        RunCheck();
+
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
+
+    }
+    public void JumpCheck()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && isgrounded)
         {
-           
-            movVert.y = Mathf.Sqrt(fuerzaSalto * -2 * gravedad);
+            AudioManager.AudioInstance.Play("Salto");
+            velocity.y = Mathf.Sqrt(jump * -2 * gravity);
         }
-
-        movVert.y += gravedad * Time.deltaTime;
-
-        charCtrl.Move(movVert * Time.deltaTime);
+    }
+    public void RunCheck()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            estaCorriendo = !estaCorriendo; //||Si es true = lo apaga||, ||Si es false = lo prende||
+        }
+        if (estaCorriendo == true)
+        {
+            velocidadNormal = velocidadCorrer;
+        }
+        else
+        {
+            velocidadNormal = 1f;
+        }
+    }
+    void OnDrawGizmos()
+    {
+        // Establecer el color del Gizmo
+        Gizmos.color = Color.red;
+        // Dibujar una esfera de alambre en la posición y radio especificados
+        Gizmos.DrawWireSphere(transform.position, boxRadio);
     }
 }

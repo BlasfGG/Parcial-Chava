@@ -8,7 +8,7 @@ public class Balas : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemigo"))
         {
-            GameManager.Instance.Actual();
+            GameManager.Instance.RestarContador();
             Destroy(collision.gameObject); // Destruye la collision
             Destroy(this.gameObject); // Destruye la bala 
         }

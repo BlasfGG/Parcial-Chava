@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     [SerializeField] private TextMeshProUGUI contador;
     [SerializeField] public int enemigos;
+
 
     void Start()
     {
@@ -22,10 +26,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void Actual()
+    private void Update()
+    {
+        if(enemigos == 0)
+        {
+            SceneManager.LoadScene("Creditos");
+            Debug.Log("Has Ganado");
+        }
+    }
+    public void RestarContador()
     {
         enemigos--;
-        contador.text = "Enemigos a derrotar: " + enemigos.ToString();
+        UpdateContador();
+    }
+    private void UpdateContador()
+    {
+        if (contador != null)
+        {
+            contador.text = "Enemigos Restantes: " + enemigos.ToString();
+        }
     }
 
 }
