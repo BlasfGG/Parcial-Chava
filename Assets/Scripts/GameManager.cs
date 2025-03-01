@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     [SerializeField] private TextMeshProUGUI contador;
     [SerializeField] public int enemigos;
-
+    private int enemigosIniciales;
 
     void Start()
     {
@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
+            enemigosIniciales = enemigos;
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -28,17 +30,19 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if(enemigos == 0)
+        if (enemigos == 0)
         {
             SceneManager.LoadScene("Creditos");
             Debug.Log("Has Ganado");
         }
     }
+
     public void RestarContador()
     {
         enemigos--;
         UpdateContador();
     }
+
     private void UpdateContador()
     {
         if (contador != null)
@@ -47,4 +51,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name != "Creditos")
+        {
+            enemigos = enemigosIniciales;
+            UpdateContador();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 }

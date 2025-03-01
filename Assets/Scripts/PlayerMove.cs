@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
@@ -16,16 +14,12 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float jump = 3f;
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private Transform groundCheck;
+    [SerializeField] private AudioSource salto;
     private bool isgrounded;
 
     [SerializeField] private CharacterController controller;
     Vector3 velocity;
 
-    private void Start()
-    {
-       AudioManager.AudioInstance.Stop("Salto");
-
-    }
     void Update()
     {
         Cursor.visible = false;
@@ -35,7 +29,6 @@ public class PlayerMove : MonoBehaviour
         {
             velocity.y = -2f;
         }
-
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
@@ -48,16 +41,18 @@ public class PlayerMove : MonoBehaviour
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
-
     }
+
     public void JumpCheck()
     {
         if (Input.GetKeyDown(KeyCode.Space) && isgrounded)
         {
-            AudioManager.AudioInstance.Play("Salto");
+            salto.Play();
             velocity.y = Mathf.Sqrt(jump * -2 * gravity);
+            
         }
     }
+
     public void RunCheck()
     {
         if (Input.GetKeyDown(KeyCode.LeftShift))
@@ -73,6 +68,7 @@ public class PlayerMove : MonoBehaviour
             velocidadNormal = 1f;
         }
     }
+
     void OnDrawGizmos()
     {
         // Establecer el color del Gizmo
