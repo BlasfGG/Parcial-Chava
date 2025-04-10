@@ -5,26 +5,40 @@ using UnityEngine;
 public class Menupost : MonoBehaviour
 {
     [SerializeField] private GameObject menuPost;
-    bool isPaused = false;
+    private bool isPaused = false;
 
     private void Update()
     {
-        isPaused = !isPaused;
+        // Detecta si se presiona la tecla Escape
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if(isPaused)
+            // Alterna el estado de pausa
+            isPaused = !isPaused;
+
+            if (isPaused)
             {
-                Time.timeScale = 1f;
-                menuPost.SetActive(false);
-                Cursor.lockState = CursorLockMode.Locked;
+                PauseGame();
             }
             else
             {
-                Time.timeScale = 0f;
-                menuPost.SetActive(true);
-                Cursor.lockState = CursorLockMode.None;
+                ResumeGame();
             }
-            
         }
+    }
+
+    private void PauseGame()
+    {
+        Time.timeScale = 0f; // Detiene el tiempo del juego
+        menuPost.SetActive(true); // Muestra el menú de pausa
+        Cursor.lockState = CursorLockMode.None; // Libera el cursor
+        Cursor.visible = true; // Hace visible el cursor
+    }
+
+    private void ResumeGame()
+    {
+        Time.timeScale = 1f; // Restaura el tiempo del juego
+        menuPost.SetActive(false); // Oculta el menú de pausa
+        Cursor.lockState = CursorLockMode.Locked; // Bloquea el cursor
+        Cursor.visible = false; // Oculta el cursor
     }
 }
