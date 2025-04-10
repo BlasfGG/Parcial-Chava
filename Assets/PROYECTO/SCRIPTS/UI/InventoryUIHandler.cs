@@ -20,7 +20,7 @@ public class InventoryUIHandler : MonoBehaviour
     private bool inventoryOpened = false; // Si tengo o no abierto el inventario
 
     private int actualPage = 0;
-    [SerializeField] private int maxPages = 3;
+   // [SerializeField] private int maxPages = 3;
 
     private void Start()
     {

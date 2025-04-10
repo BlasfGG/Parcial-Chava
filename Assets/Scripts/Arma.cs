@@ -30,7 +30,7 @@ public class Arma : MonoBehaviour
 
     bool JalaGatillo()
     {
-        return Input.GetKeyDown(KeyCode.Mouse0);
+        return Input.GetKey(KeyCode.Mouse0);
     }
 
     bool PuedeDisparar()
