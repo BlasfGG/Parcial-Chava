@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
             enemigosIniciales = enemigos;
+            contador.text = "Enemigos Restantes: " + enemigos.ToString();
         }
         else
         {
@@ -38,6 +39,14 @@ public class GameManager : MonoBehaviour
     {
         enemigos--;
         UpdateContador();
+    }
+
+    // Reiniciar el marcador de enemigos
+    public void ResetEnemyScore()
+    {
+        contador.text = "Enemigos Restantes: " + enemigosIniciales.ToString();
+        enemigos = 20;
+        Debug.Log("Enemy Score reset to 20");
     }
 
     private void UpdateContador()
