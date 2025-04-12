@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
             enemigosIniciales = enemigos;
-            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -49,17 +48,4 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, LoadSceneMode mode)
-    {
-        if (scene.name != "Creditos")
-        {
-            enemigos = enemigosIniciales;
-            UpdateContador();
-        }
-    }
-
-    private void OnDestroy()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
 }
